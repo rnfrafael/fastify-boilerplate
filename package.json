@@ -1,0 +1,28 @@
+{
+  "name": "api-futebol",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.0.1",
+    "@fastify/swagger": "^9.5.1",
+    "@scalar/fastify-api-reference": "^1.31.15",
+    "fastify": "^5.4.0",
+    "fastify-type-provider-zod": "^5.0.1",
+    "node-fetch": "^3.3.2",
+    "winston": "^3.17.0"
+  },
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+		"dev:tsx": "bunx tsx --watch src/index.ts",
+		"dev:inspect": "bun --inspect --watch src/index.ts",
+		"bun": "bun src/index.ts",
+		"bun:tsx": "bunx tsx src/index.ts"
+	}
+}
