@@ -2,7 +2,6 @@ import cors from "@fastify/cors";
 import FastifySwagger from "@fastify/swagger";
 import ScalarApiReference from "@scalar/fastify-api-reference";
 import fastify, { errorCodes } from "fastify";
-import { logger } from "./utils";
 import {
 	hasZodFastifySchemaValidationErrors,
 	isResponseSerializationError,
@@ -12,23 +11,38 @@ import {
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod";
 import { randomUUID } from "node:crypto";
+import { footballRoutes } from "./footballGenerate";
+import { footballHtmlRoutes } from "./footballGenerateHtml";
+import { movieRoutes } from "./movieGenerate";
+import { logger } from "./utils";
 
 const app = fastify({ requestTimeout: 60000 }).withTypeProvider<ZodTypeProvider>();
 const port = Number(process.env.PORT) || 3003;
 
+// Set compilers first, before any plugin registration
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
 
+// Register plugins in correct order
 app.register(cors, {});
+
+// Register Swagger before routes so it can collect schemas
 app.register(FastifySwagger, {
 	openapi: {
 		info: {
-			title: "IPTV",
+			title: "Image Generation API",
 			version: "1.0.0",
 		},
 	},
 	transform: jsonSchemaTransform,
 });
+
+// Register the API routes after Swagger
+app.register(footballRoutes, { prefix: "/api" });
+app.register(footballHtmlRoutes, { prefix: "/api" });
+app.register(movieRoutes, { prefix: "/api" });
+
+// Register Scalar docs last
 app.register(ScalarApiReference, {
 	routePrefix: "/reference",
 	configuration: {
